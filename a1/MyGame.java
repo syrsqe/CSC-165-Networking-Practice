@@ -143,20 +143,19 @@ public class MyGame extends VariableFrameRateGame {
         return dolphinN.getWorldPosition();
     }
 
-//    public void addGhostAvatarToGameWorld(GhostAvatar avatar)
-//            throws IOException {
-//        if (avatar != null) {
-//            Entity ghostE = sm.createEntity("ghost", "whatever.obj");
-//            ghostE.setPrimitive(Primitive.TRIANGLES);
-//            SceneNode ghostN = sm.getRootSceneNode().
-//                    createChildSceneNode(avatar.getID().toString());
-//            ghostN.attachObject(ghostE);
-//           // ghostN.setLocalPosition(desired location...);
-//            avatar.setNode(ghostN);
-//            avatar.setEntity(ghostE);
-//           // avatar.setPosition(node’s position...maybe redundant);
-//        }
-//    }
+    public void addGhostAvatarToGameWorld(GhostAvatar avatar)
+            throws IOException {
+        if (avatar != null) {
+            Entity ghostE = tempManager.createEntity("ghost", "dolphinHighPoly.obj");
+            ghostE.setPrimitive(Primitive.TRIANGLES);
+            SceneNode ghostN = tempManager.getRootSceneNode().createChildSceneNode(avatar.getId().toString());
+            ghostN.attachObject(ghostE);
+            ghostN.setLocalPosition(Vector3f.createFrom(2.0f,2.0f,2.0f));
+            avatar.setNode(ghostN);
+            avatar.setEntity(ghostE);
+           // avatar.setPosition(node’s position...maybe redundant);
+        }
+    }
 //
 //    public void removeGhostAvatarFromGameWorld(GhostAvatar avatar) {
 //        if (avatar != null) gameObjectsToRemove.add(avatar.getID());
@@ -460,7 +459,7 @@ public class MyGame extends VariableFrameRateGame {
 
         im = new GenericInputManager();
         String kbName = im.getKeyboardName();
-        String gpName = im.getFirstGamepadName();
+       // String gpName = im.getFirstGamepadName();
 
         System.out.println(kbName);
         dolphinN.moveRight(3);
@@ -491,23 +490,23 @@ public class MyGame extends VariableFrameRateGame {
 
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.Y, quitGameAction, InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.C, incrementCounterAction, InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
-        im.associateAction(gpName, net.java.games.input.Component.Identifier.Button._0, incrementCounterAction, InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
-        //Movement
+//        im.associateAction(gpName, net.java.games.input.Component.Identifier.Button._0, incrementCounterAction, InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
+//        //Movement
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.W, moveForwardAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.D, moveRightAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-        im.associateAction(gpName, net.java.games.input.Component.Identifier.Axis.X, moveSideAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+//        im.associateAction(gpName, net.java.games.input.Component.Identifier.Axis.X, moveSideAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.A, moveLeftAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.S, moveBackwardAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-        im.associateAction(gpName, net.java.games.input.Component.Identifier.Axis.Y, moveVerticleAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+//        im.associateAction(gpName, net.java.games.input.Component.Identifier.Axis.Y, moveVerticleAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
         //camera rotation
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.UP, rotateUpAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.DOWN, rotateDownAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.RIGHT, rotateRightAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.LEFT, rotateLeftAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
         im.associateAction(kbName, net.java.games.input.Component.Identifier.Key.SPACE, toggleDolphinAction, InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
-        im.associateAction(gpName, net.java.games.input.Component.Identifier.Button._0, toggleDolphinAction, InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
-        im.associateAction(gpName, net.java.games.input.Component.Identifier.Axis.RX, rotateHorizontalAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-        im.associateAction(gpName, net.java.games.input.Component.Identifier.Axis.RY, rotateVerticleAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+//        im.associateAction(gpName, net.java.games.input.Component.Identifier.Button._0, toggleDolphinAction, InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
+//        im.associateAction(gpName, net.java.games.input.Component.Identifier.Axis.RX, rotateHorizontalAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+//        im.associateAction(gpName, net.java.games.input.Component.Identifier.Axis.RY, rotateVerticleAction, InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 
 
     }

@@ -6,12 +6,13 @@ import a1.*;
 import ray.networking.*;
 import ray.networking.client.*;
 import ray.rml.*;
+import java.util.LinkedList;;
 
 
 public class ProtocolClient extends GameConnectionClient {
     private MyGame game;
     private UUID id;
-   // private LinkedList<GhostAvatar> ghostAvatars;
+   private LinkedList<GhostAvatar> ghostAvatars;
 
     public ProtocolClient(InetAddress remAddr, int remPort, ProtocolType pType, MyGame game) throws IOException { //initializeds in main
         super(remAddr, remPort, pType);
@@ -45,19 +46,19 @@ public class ProtocolClient extends GameConnectionClient {
             if ((messageTokens[0].compareTo("dsfr") == 0) // receive �dsfr�
                     || (messageTokens[0].compareTo("create") == 0)) { // format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z
                 UUID ghostID = UUID.fromString(messageTokens[1]);
-                Vector3 ghostPosition = Vector3f.createFrom(
+                Vector3f ghostPosition = (Vector3f) Vector3f.createFrom(
                         Float.parseFloat(messageTokens[2]),
                         Float.parseFloat(messageTokens[3]),
                         Float.parseFloat(messageTokens[4]));
                         System.out.println("create revieved by client");
-//                try {
-//                   // createGhostAvatar(ghostID, ghostPosition);
-//                } catch (IOException e) {
-//                    System.out.println("error creating ghost avatar");
-//                }
+                try {
+                   createGhostAvatar(ghostID, ghostPosition);
+                } catch (IOException e) {
+                    System.out.println("error creating ghost avatar");
+                }
             }
-            if (messageTokens[0].compareTo("wsdf") == 0){ // rec. �create�� //wants details for
-                System.out.println("client reveived wants details for message");
+            if (messageTokens[0].compareTo("wdfnc") == 0){ // rec. �create�� //wants details for new client
+                System.out.println("client reveived wants details for message: " + this.id);
                 //sendDetailsForMessage((Vector3f) game.getPlayerPosition()); // (sedDetailsfor)respond with game position and orientation
 
             }
@@ -100,6 +101,13 @@ public class ProtocolClient extends GameConnectionClient {
 
     public void sendMoveMessage(Vector3f pos) {
     }// etc�..
+
+    public void createGhostAvatar(UUID ghostID, Vector3f ghostPosition) throws IOException{
+        GhostAvatar newGhostAvatar = new GhostAvatar(ghostID, ghostPosition);
+        ghostAvatars.add(newGhostAvatar);
+        game.addGhostAvatarToGameWorld(newGhostAvatar);
+
+    }
 }
 
 

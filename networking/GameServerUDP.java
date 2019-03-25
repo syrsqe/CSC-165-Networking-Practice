@@ -3,12 +3,22 @@ package networking;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.*;
+//import java.util.HashMap.*;
 import java.lang.*;
 
 import ray.networking.server.GameConnectionServer;
 import ray.networking.server.IClientInfo;
 
+
+
+
 public class GameServerUDP extends GameConnectionServer<UUID> {
+
+    private ConcurrentHashMap<UUID,IClientInfo> clientList;
+    private Enumeration clientEnum;
+
     public GameServerUDP(int localPort) throws IOException {
         super(localPort, ProtocolType.UDP);
         System.out.println("server running on port: " + localPort);
@@ -26,6 +36,8 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
                     IClientInfo ci;
                     ci = getServerSocket().createClientInfo(senderIP, senderPort);
                     UUID clientID = UUID.fromString(msgTokens[1]);
+                    System.out.println("client ID: " + clientID);
+                    System.out.println("Client Info: " + ci);
                     addClient(ci, clientID);
                     sendJoinedMessage(clientID, true);
                 } catch (IOException e) {
@@ -38,7 +50,7 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
                 UUID clientID = UUID.fromString(msgTokens[1]);
                 String[] pos = {msgTokens[2], msgTokens[3], msgTokens[4]};
                 sendCreateMessages(clientID, pos);
-                sendWantsDetailsMessages(clientID);
+                sendWantsDetailsForNewClientMessages(clientID);
             }
 // case where server receives a BYE message
 // format: bye,localid
@@ -69,29 +81,58 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
     }
 
     public void sendCreateMessages(UUID clientID, String[] position) { // format: create, remoteId, x, y, z
-        try {
+
             String message = new String("create," + clientID.toString());
             message += "," + position[0];
             message += "," + position[1];
             message += "," + position[2];
             System.out.println("Create message revieved at server");
-            sendPacketToAll(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            clientList = getClients();
+            clientEnum = clientList.keys();
+            while (clientEnum.hasMoreElements()) {
+                System.out.println("current Client UUID in create message: " + clientID);
+                UUID nextClientID = (UUID) clientEnum.nextElement();
+
+                if (nextClientID.compareTo(clientID) != 0) {
+                    try {
+                        System.out.println("sending create new client to: " + nextClientID);
+                        sendPacket(message, nextClientID);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                //forward to new client
+            }
     }
 
     public void sndDetailsMsg(UUID clientID, UUID remoteId, String[] position) {
     }// etc�..
 
-    public void sendWantsDetailsMessages(UUID clientID) {
-        System.out.println("sending wants details for message");
-        String message = new String("wsdf,");
-        try{
-            sendPacket(message, clientID);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void sendWantsDetailsForNewClientMessages(UUID clientID) {
+        String message = new String("wdfnc,");
+        //go through list and get all clients except current client
+        clientList = getClients();
+        clientEnum = clientList.keys();
+        while (clientEnum.hasMoreElements()) {
+            System.out.println("current Client UUID in wants details for new client: " + clientID);
+
+            UUID nextClientID = (UUID) clientEnum.nextElement();
+
+            if (nextClientID.compareTo(clientID) != 0) {
+                try {
+                    System.out.println("sending wants details for new client to: " + nextClientID);
+                    sendPacket(message, nextClientID);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //forward to new client
         }
+//        System.out.println(clientList);
+//        System.out.println("sending wants details for message");
+
     }// etc�..
 
     public void sendMoveMessages(UUID clientID, String[] position) {
