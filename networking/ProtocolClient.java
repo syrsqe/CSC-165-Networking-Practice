@@ -58,7 +58,7 @@ public class ProtocolClient extends GameConnectionClient {
             }
             if (messageTokens[0].compareTo("wsdf") == 0){ // rec. �create�� //wants details for
                 System.out.println("client reveived wants details for message");
-                sendDetailsForMessage((Vector3f) game.getPlayerPosition()); // (sedDetailsfor)respond with game position and orientation
+                //sendDetailsForMessage((Vector3f) game.getPlayerPosition()); // (sedDetailsfor)respond with game position and orientation
 
             }
             if (messageTokens[0].compareTo("wsds") == 0) // rec. �create��
