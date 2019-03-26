@@ -59,8 +59,16 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
                 sendByeMessages(clientID);
                 removeClient(clientID);
             }
-// case where server receives a DETAILS-FOR message
-            if (msgTokens[0].compareTo("dsfr") == 0) {
+// case where server receives a DETAILS-FOR-Me-Message
+            if (msgTokens[0].compareTo("dfm,") == 0) {
+                UUID destinationClientID = UUID.fromString(msgTokens[1]);
+                UUID detailsClientID = UUID.fromString(msgTokens[2]);
+                String[] remGhostPosition = {msgTokens[3], msgTokens[4], msgTokens[5]};
+                sendDetailsMessasge(detailsClientID, destinationClientID, remGhostPosition);
+
+
+
+
             } // etc�..
 // case where server receives a MOVE message
 
@@ -86,7 +94,7 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
             message += "," + position[0];
             message += "," + position[1];
             message += "," + position[2];
-            System.out.println("Create message revieved at server");
+            System.out.println("Create message recieved at server");
             clientList = getClients();
             clientEnum = clientList.keys();
             while (clientEnum.hasMoreElements()) {
@@ -106,11 +114,20 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
             }
     }
 
-    public void sndDetailsMsg(UUID clientID, UUID remoteId, String[] position) {
+    public void sendDetailsMessasge(UUID clientID, UUID remoteId, String[] position) { //details for new client //remote is destination address
+        String message = new String("dm," + remoteId.toString()); //details for messege
+        message += "," + position[0];
+        message += "," + position[1];
+        message += "," + position[2];
+        try {
+            sendPacket(message, remoteId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }// etc�..
 
     public void sendWantsDetailsForNewClientMessages(UUID clientID) {
-        String message = new String("wdfnc,");
+        String message = new String("wdfnc,"+ clientID.toString()); //has client Id to communicate with server
         //go through list and get all clients except current client
         clientList = getClients();
         clientEnum = clientList.keys();

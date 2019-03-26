@@ -150,7 +150,7 @@ public class MyGame extends VariableFrameRateGame {
             ghostE.setPrimitive(Primitive.TRIANGLES);
             SceneNode ghostN = tempManager.getRootSceneNode().createChildSceneNode(avatar.getId().toString());
             ghostN.attachObject(ghostE);
-            ghostN.setLocalPosition(Vector3f.createFrom(2.0f,2.0f,2.0f));
+            ghostN.setLocalPosition(avatar.getGhostPosition()); //get position that was sent
             avatar.setNode(ghostN);
             avatar.setEntity(ghostE);
            // avatar.setPosition(node’s position...maybe redundant);

@@ -18,6 +18,7 @@ public class ProtocolClient extends GameConnectionClient {
         super(remAddr, remPort, pType);
         this.game = game;
         this.id = UUID.randomUUID();
+        ghostAvatars= new LinkedList<GhostAvatar>();
         //this.ghostAvatars = new LinkedList<GhostAvatar>();
     }
 
@@ -43,7 +44,7 @@ public class ProtocolClient extends GameConnectionClient {
                 //removeGhostAvatar(ghostID);
             }
             // case where client receives a DETAILS-FOR message
-            if ((messageTokens[0].compareTo("dsfr") == 0) // receive �dsfr�
+            if ((messageTokens[0].compareTo("ds") == 0) // receive �dsfr�
                     || (messageTokens[0].compareTo("create") == 0)) { // format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z
                 UUID ghostID = UUID.fromString(messageTokens[1]);
                 Vector3f ghostPosition = (Vector3f) Vector3f.createFrom(
@@ -58,8 +59,10 @@ public class ProtocolClient extends GameConnectionClient {
                 }
             }
             if (messageTokens[0].compareTo("wdfnc") == 0){ // rec. �create�� //wants details for new client
+                UUID ClientNeedsInfo = UUID.fromString(messageTokens[1]);
                 System.out.println("client reveived wants details for message: " + this.id);
-                //sendDetailsForMessage((Vector3f) game.getPlayerPosition()); // (sedDetailsfor)respond with game position and orientation
+
+                sendDetailsForMeMessage(ClientNeedsInfo,(Vector3f) game.getPlayerPosition()); // (sedDetailsfor)respond with game position and orientation
 
             }
             if (messageTokens[0].compareTo("wsds") == 0) // rec. �create��
@@ -96,8 +99,15 @@ public class ProtocolClient extends GameConnectionClient {
     public void sendByeMessage() {
     }// etc�..
 
-    public void sendDetailsForMessage(UUID remId, Vector3f pos) {
-    }// etc�..
+    public void sendDetailsForMeMessage(UUID remId, Vector3f pos) { // send my postion to remoteclient, //remId is destination
+        try {
+            String message = new String("dfm,"+ remId.toString() + "," + this.id);
+            message += "," + pos.x() + "," + pos.y() + "," + pos.z();
+            sendPacket(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void sendMoveMessage(Vector3f pos) {
     }// etc�..
@@ -106,6 +116,7 @@ public class ProtocolClient extends GameConnectionClient {
         GhostAvatar newGhostAvatar = new GhostAvatar(ghostID, ghostPosition);
         ghostAvatars.add(newGhostAvatar);
         game.addGhostAvatarToGameWorld(newGhostAvatar);
+        System.out.println("ghost avatar created");
 
     }
 }
