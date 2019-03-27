@@ -16,7 +16,7 @@ import ray.networking.server.IClientInfo;
 
 public class GameServerUDP extends GameConnectionServer<UUID> {
 
-    private ConcurrentHashMap<UUID,IClientInfo> clientList;
+    private ConcurrentHashMap<UUID, IClientInfo> clientList;
     private Enumeration clientEnum;
 
     public GameServerUDP(int localPort) throws IOException {
@@ -60,13 +60,12 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
                 removeClient(clientID);
             }
 // case where server receives a DETAILS-FOR-Me-Message
-            if (msgTokens[0].compareTo("dfm,") == 0) {
+            if (msgTokens[0].compareTo("dfm") == 0) {
+                System.out.println("revieved details for me from client:");
                 UUID destinationClientID = UUID.fromString(msgTokens[1]);
                 UUID detailsClientID = UUID.fromString(msgTokens[2]);
                 String[] remGhostPosition = {msgTokens[3], msgTokens[4], msgTokens[5]};
                 sendDetailsMessasge(detailsClientID, destinationClientID, remGhostPosition);
-
-
 
 
             } // etc�..
@@ -90,28 +89,28 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
 
     public void sendCreateMessages(UUID clientID, String[] position) { // format: create, remoteId, x, y, z
 
-            String message = new String("create," + clientID.toString());
-            message += "," + position[0];
-            message += "," + position[1];
-            message += "," + position[2];
-            System.out.println("Create message recieved at server");
-            clientList = getClients();
-            clientEnum = clientList.keys();
-            while (clientEnum.hasMoreElements()) {
-                System.out.println("current Client UUID in create message: " + clientID);
-                UUID nextClientID = (UUID) clientEnum.nextElement();
+        String message = new String("create," + clientID.toString());
+        message += "," + position[0];
+        message += "," + position[1];
+        message += "," + position[2];
+        System.out.println("Create message recieved at server");
+        clientList = getClients();
+        clientEnum = clientList.keys();
+        while (clientEnum.hasMoreElements()) {
+            System.out.println("current Client UUID in create message: " + clientID);
+            UUID nextClientID = (UUID) clientEnum.nextElement();
 
-                if (nextClientID.compareTo(clientID) != 0) {
-                    try {
-                        System.out.println("sending create new client to: " + nextClientID);
-                        sendPacket(message, nextClientID);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            if (nextClientID.compareTo(clientID) != 0) {
+                try {
+                    System.out.println("sending create new client to: " + nextClientID);
+                    sendPacket(message, nextClientID);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                //forward to new client
             }
+
+            //forward to new client
+        }
     }
 
     public void sendDetailsMessasge(UUID clientID, UUID remoteID, String[] position) { //details for new client //remote is destination address
@@ -119,6 +118,7 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
         message += "," + position[0];
         message += "," + position[1];
         message += "," + position[2];
+        System.out.println("sending details message to client:" + clientID);
         try {
             sendPacket(message, remoteID);
         } catch (IOException e) {
@@ -127,7 +127,7 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
     }// etc�..
 
     public void sendWantsDetailsForNewClientMessages(UUID clientID) {
-        String message = new String("wdfnc,"+ clientID.toString()); //has client Id to communicate with server
+        String message = new String("wdfnc," + clientID.toString()); //has client Id to communicate with server
         //go through list and get all clients except current client
         clientList = getClients();
         clientEnum = clientList.keys();
@@ -156,5 +156,23 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
     }// etc�..
 
     public void sendByeMessages(UUID clientID) {
-    }// etc�..
+
+        String message = new String("bye," + clientID.toString()); //send by message to other servers so they know to remove avatar
+        System.out.println("bye message recieved at server");
+        clientList = getClients();
+        clientEnum = clientList.keys();
+        while (clientEnum.hasMoreElements()) {
+            System.out.println("sending by messege and removing clien from list: " + clientID);
+            UUID nextClientID = (UUID) clientEnum.nextElement();
+
+            if (nextClientID.compareTo(clientID) != 0) {
+                try {
+                    System.out.println("sending by to: " + nextClientID);
+                    sendPacket(message, nextClientID);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

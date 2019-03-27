@@ -70,7 +70,7 @@ public class MyGame extends VariableFrameRateGame {
     private ProtocolClient protClient;
     private GameServerUDP gameServer;
     private boolean isClientConnected;
-    private Vector<UUID> gameObjectsToRemove;
+    private LinkedList<UUID> gameObjectsToRemove;
 
     private static String networkType; //going to need to be nonestatic at some point
 
@@ -99,7 +99,7 @@ public class MyGame extends VariableFrameRateGame {
     }
 
     private void setupNetworking() {
-        gameObjectsToRemove = new Vector<UUID>();
+        gameObjectsToRemove = new LinkedList<UUID>();
         if (networkType.compareTo("s") == 0) { //server
             try {
                 gameServer = new GameServerUDP(serverPort);
@@ -157,9 +157,9 @@ public class MyGame extends VariableFrameRateGame {
         }
     }
 //
-//    public void removeGhostAvatarFromGameWorld(GhostAvatar avatar) {
-//        if (avatar != null) gameObjectsToRemove.add(avatar.getID());
-//    }
+    public void removeGhostAvatarFromGameWorld(GhostAvatar avatar) {
+        if (avatar != null) gameObjectsToRemove.add(avatar.getId());
+    }
 
     private class SendCloseConnectionPacketAction extends AbstractInputAction { // for leaving the game... need to attach to an input device
         @Override
@@ -435,6 +435,7 @@ public class MyGame extends VariableFrameRateGame {
 
     public void shutdown() {
         System.out.println("shutdown requested");
+        protClient.sendByeMessage();
         game.setState(Game.State.STOPPING);
     }
 

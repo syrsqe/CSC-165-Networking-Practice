@@ -6,7 +6,7 @@ import a1.*;
 import ray.networking.*;
 import ray.networking.client.*;
 import ray.rml.*;
-import java.util.LinkedList;;
+import java.util.LinkedList;
 
 
 public class ProtocolClient extends GameConnectionClient {
@@ -67,6 +67,18 @@ public class ProtocolClient extends GameConnectionClient {
                 sendDetailsForMeMessage(ClientNeedsInfo,(Vector3f) game.getPlayerPosition()); // (sedDetailsfor)respond with game position and orientation
 
             }
+            if (messageTokens[0].compareTo("bye") == 0) //on receieve by message, remove ghost avatar from local list and tell game to remove it also
+            {
+                UUID ghostID = UUID.fromString(messageTokens[1]);
+                for(GhostAvatar ghost: ghostAvatars){
+                    if(ghost.getId().compareTo(ghostID) == 0){
+                        game.removeGhostAvatarFromGameWorld(ghost);
+                        ghostAvatars.remove(ghost);
+                    }
+                }
+
+
+            }
             if (messageTokens[0].compareTo("wsds") == 0) // rec. �create��
             {
             }// etc�..
@@ -99,11 +111,13 @@ public class ProtocolClient extends GameConnectionClient {
     }
 
     public void sendByeMessage() {
-    }// etc�..
+        String message = new String("bye," + id.toString());
+    }
 
     public void sendDetailsForMeMessage(UUID remId, Vector3f pos) { // send my postion to remoteclient, //remId is destination
         try {
-            String message = new String("dfm,"+ remId.toString() + "," + this.id);
+            System.out.println("sending details for me message to server");
+            String message = new String("dfm,"+ remId.toString() + "," + id.toString());
             message += "," + pos.x() + "," + pos.y() + "," + pos.z();
             sendPacket(message);
         } catch (IOException e) {
