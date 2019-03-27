@@ -137,7 +137,6 @@ public class MyGame extends VariableFrameRateGame {
         }
         gameObjectsToRemove.clear();
         for(UUID u: gameObjectsToRemove){
-            System.out.println("game objects to remove contails: " + u);
         }
     }
 
@@ -162,7 +161,7 @@ public class MyGame extends VariableFrameRateGame {
     public void removeGhostAvatarFromGameWorld(GhostAvatar avatar) {
         if (avatar != null) gameObjectsToRemove.add(avatar.getId());
         for(UUID u: gameObjectsToRemove){
-            System.out.println("will remove: " + u);
+            System.out.println("client: " + u + " left");
         }
     }
 
