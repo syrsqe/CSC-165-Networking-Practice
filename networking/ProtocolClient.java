@@ -44,7 +44,7 @@ public class ProtocolClient extends GameConnectionClient {
                 //removeGhostAvatar(ghostID);
             }
             // case where client receives a DETAILS-FOR message
-            if ((messageTokens[0].compareTo("ds") == 0) // receive �dsfr�
+            if ((messageTokens[0].compareTo("dm") == 0) // receive �dsfr�
                     || (messageTokens[0].compareTo("create") == 0)) { // format: create, remoteId, x,y,z or dsfr, remoteId, x,y,z
                 UUID ghostID = UUID.fromString(messageTokens[1]);
                 Vector3f ghostPosition = (Vector3f) Vector3f.createFrom(
