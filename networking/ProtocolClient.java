@@ -65,6 +65,10 @@ public class ProtocolClient extends GameConnectionClient {
             }
             if (messageTokens[0].compareTo("bye") == 0) //on receieve by message, remove ghost avatar from local list and tell game to remove it also
             {
+                for(GhostAvatar ghost: ghostAvatars){
+                    System.out.println("ghosts in ghostAvataraRRAY before client left" + ghost.getId().toString());
+                }
+
                 UUID ghostID = UUID.fromString(messageTokens[1]);
                 for(GhostAvatar ghost: ghostAvatars){
                     if(ghost.getId().compareTo(ghostID) == 0){
@@ -72,6 +76,9 @@ public class ProtocolClient extends GameConnectionClient {
                         game.removeGhostAvatarFromGameWorld(ghost);
 
                     }
+                }
+                for(GhostAvatar ghost: ghostAvatars){
+                    System.out.println("ghosts in ghostAvataraRRAY after client left" + ghost.getId().toString());
                 }
 
 

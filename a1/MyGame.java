@@ -147,7 +147,7 @@ public class MyGame extends VariableFrameRateGame {
 
     public void addGhostAvatarToGameWorld(GhostAvatar avatar) throws IOException {
         if (avatar != null) {
-            Entity ghostE = tempManager.createEntity("ghost", "dolphinHighPoly.obj");
+            Entity ghostE = tempManager.createEntity("ghost" + avatar.getId().toString(), "dolphinHighPoly.obj");
             ghostE.setPrimitive(Primitive.TRIANGLES);
             SceneNode ghostN = tempManager.getRootSceneNode().createChildSceneNode(avatar.getId().toString());
             ghostN.attachObject(ghostE);
@@ -157,7 +157,6 @@ public class MyGame extends VariableFrameRateGame {
            // avatar.setPosition(node’s position...maybe redundant);
         }
     }
-//
     public void removeGhostAvatarFromGameWorld(GhostAvatar avatar) {
         if (avatar != null) gameObjectsToRemove.add(avatar.getId());
         for(UUID u: gameObjectsToRemove){
@@ -439,7 +438,10 @@ public class MyGame extends VariableFrameRateGame {
 
     public void shutdown() {
         System.out.println("shutdown requested");
-        protClient.sendByeMessage();
+        if (networkType.compareTo("c") == 0){
+            protClient.sendByeMessage();
+        }
+
         game.setState(Game.State.STOPPING);
     }
 
