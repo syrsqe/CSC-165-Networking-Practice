@@ -114,13 +114,13 @@ public class GameServerUDP extends GameConnectionServer<UUID> {
             }
     }
 
-    public void sendDetailsMessasge(UUID clientID, UUID remoteId, String[] position) { //details for new client //remote is destination address
-        String message = new String("dm," + remoteId.toString()); //details for messege
+    public void sendDetailsMessasge(UUID clientID, UUID remoteID, String[] position) { //details for new client //remote is destination address
+        String message = new String("dm," + clientID.toString()); //details for messege
         message += "," + position[0];
         message += "," + position[1];
         message += "," + position[2];
         try {
-            sendPacket(message, remoteId);
+            sendPacket(message, remoteID);
         } catch (IOException e) {
             e.printStackTrace();
         }

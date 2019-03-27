@@ -52,6 +52,8 @@ public class ProtocolClient extends GameConnectionClient {
                         Float.parseFloat(messageTokens[3]),
                         Float.parseFloat(messageTokens[4]));
                         System.out.println("create revieved by client");
+
+
                 try {
                    createGhostAvatar(ghostID, ghostPosition);
                 } catch (IOException e) {
