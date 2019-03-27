@@ -72,8 +72,9 @@ public class ProtocolClient extends GameConnectionClient {
                 UUID ghostID = UUID.fromString(messageTokens[1]);
                 for(GhostAvatar ghost: ghostAvatars){
                     if(ghost.getId().compareTo(ghostID) == 0){
-                        game.removeGhostAvatarFromGameWorld(ghost);
                         ghostAvatars.remove(ghost);
+                        game.removeGhostAvatarFromGameWorld(ghost);
+
                     }
                 }
 
