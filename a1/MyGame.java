@@ -136,6 +136,9 @@ public class MyGame extends VariableFrameRateGame {
             tempManager.destroySceneNode(it.next().toString());
         }
         gameObjectsToRemove.clear();
+        for(UUID u: gameObjectsToRemove){
+            System.out.println("game objects to remove contails: " + u);
+        }
     }
 
     public Vector3 getPlayerPosition() {
@@ -143,8 +146,7 @@ public class MyGame extends VariableFrameRateGame {
         return dolphinN.getWorldPosition();
     }
 
-    public void addGhostAvatarToGameWorld(GhostAvatar avatar)
-            throws IOException {
+    public void addGhostAvatarToGameWorld(GhostAvatar avatar) throws IOException {
         if (avatar != null) {
             Entity ghostE = tempManager.createEntity("ghost", "dolphinHighPoly.obj");
             ghostE.setPrimitive(Primitive.TRIANGLES);
@@ -159,6 +161,9 @@ public class MyGame extends VariableFrameRateGame {
 //
     public void removeGhostAvatarFromGameWorld(GhostAvatar avatar) {
         if (avatar != null) gameObjectsToRemove.add(avatar.getId());
+        for(UUID u: gameObjectsToRemove){
+            System.out.println("will remove: " + u);
+        }
     }
 
     private class SendCloseConnectionPacketAction extends AbstractInputAction { // for leaving the game... need to attach to an input device
