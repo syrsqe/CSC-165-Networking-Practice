@@ -112,6 +112,12 @@ public class ProtocolClient extends GameConnectionClient {
 
     public void sendByeMessage() {
         String message = new String("bye," + id.toString());
+        System.out.println("sending Bye message");
+        try {
+            sendPacket(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendDetailsForMeMessage(UUID remId, Vector3f pos) { // send my postion to remoteclient, //remId is destination
